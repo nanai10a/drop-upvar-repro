@@ -1,0 +1,23 @@
+name: repro-matrix
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  repro:
+    # Red == bug reproduced (upvar lost), green == clean.
+    # continue-on-error keeps the matrix readable as a truth table.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [nightly-2025-04-27, nightly-2025-04-29, nightly]
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, windows-11-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: install toolchain
+        run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal
+      - name: run repro
+        run: cargo +${{ matrix.toolchain }} test -- --nocapture
