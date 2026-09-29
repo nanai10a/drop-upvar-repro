@@ -1,0 +1,604 @@
+   Compiling async-drop-unsoundness v0.1.0 (/Users/nanai/workspace-260930-async-drop-unsoundness)
+warning: the feature `async_drop` is incomplete and may not be safe to use and/or cause compiler crashes
+ --> src/lib.rs:1:12
+  |
+1 | #![feature(async_drop)]
+  |            ^^^^^^^^^^
+  |
+  = note: see issue #126482 <https://github.com/rust-lang/rust/issues/126482> for more information
+  = note: `#[warn(incomplete_features)]` on by default
+
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn pend_res() -> {async fn body of pend_res()} {
+    let mut _0: {async fn body of pend_res()};
+
+    bb0: {
+        _0 = {coroutine@src/lib.rs:3:52: 6:2 (#0)};
+        return;
+    }
+}
+
+fn pend_res::{closure#0}(_1: Pin<&mut {async fn body of pend_res()}>, _2: &mut Context<'_>) -> Poll<Result<Option<Vec<u8>>, ()>> {
+    coroutine layout {
+        field _s0: std::future::Pending<()>;
+        variant_fields = {
+            Unresumed(0): [],
+            Returned (1): [],
+            Panicked (2): [],
+            Suspend0 (3): [_s0],
+        }
+        storage_conflicts = BitMatrix(1x1) {(_s0, _s0)}
+    }
+    debug _task_context => _16;
+    coroutine debug __awaitee => _s0;
+    let mut _0: std::task::Poll<std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>>;
+    let mut _3: std::future::Pending<()>;
+    let mut _4: std::future::Pending<()>;
+    let mut _5: std::task::Poll<()>;
+    let mut _6: std::pin::Pin<&mut std::future::Pending<()>>;
+    let mut _7: &mut std::future::Pending<()>;
+    let mut _8: &mut std::task::Context<'_>;
+    let mut _9: std::future::ResumeTy;
+    let mut _10: isize;
+    let mut _12: std::future::ResumeTy;
+    let mut _13: !;
+    let mut _14: u32;
+    let mut _15: &mut {async fn body of pend_res()};
+    let mut _16: std::future::ResumeTy;
+    let mut _17: std::ptr::NonNull<std::task::Context<'_>>;
+    scope 1 {
+        debug __awaitee => (((*_15) as variant#3).0: std::future::Pending<()>);
+        let _11: ();
+        scope 2 {
+            debug result => _11;
+        }
+    }
+
+    bb0: {
+        _17 = move _2 as std::ptr::NonNull<std::task::Context<'_>> (Transmute);
+        _16 = std::future::ResumeTy(move _17);
+        _15 = copy (_1.0: &mut {async fn body of pend_res()});
+        _14 = discriminant((*_15));
+        switchInt(move _14) -> [0: bb12, 2: bb11, 3: bb10, otherwise: bb6];
+    }
+
+    bb1: {
+        _3 = <std::future::Pending<()> as IntoFuture>::into_future(move _4) -> [return: bb2, unwind: bb9];
+    }
+
+    bb2: {
+        (((*_15) as variant#3).0: std::future::Pending<()>) = move _3;
+        goto -> bb3;
+    }
+
+    bb3: {
+        _7 = &mut (((*_15) as variant#3).0: std::future::Pending<()>);
+        _6 = Pin::<&mut std::future::Pending<()>>::new_unchecked(copy _7) -> [return: bb4, unwind: bb9];
+    }
+
+    bb4: {
+        _9 = copy _16;
+        _8 = copy (_9.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _5 = <std::future::Pending<()> as Future>::poll(move _6, copy _8) -> [return: bb5, unwind: bb9];
+    }
+
+    bb5: {
+        _10 = discriminant(_5);
+        switchInt(move _10) -> [0: bb8, 1: bb7, otherwise: bb6];
+    }
+
+    bb6: {
+        unreachable;
+    }
+
+    bb7: {
+        _0 = Poll::<Result<Option<Vec<u8>>, ()>>::Pending;
+        discriminant((*_15)) = 3;
+        return;
+    }
+
+    bb8: {
+        _11 = copy ((_5 as Ready).0: ());
+        _13 = panic(const "internal error: entered unreachable code") -> bb9;
+    }
+
+    bb9 (cleanup): {
+        discriminant((*_15)) = 2;
+        resume;
+    }
+
+    bb10: {
+        _12 = move _16;
+        _16 = move _12;
+        goto -> bb3;
+    }
+
+    bb11: {
+        assert(const false, "`async fn` resumed after panicking") -> [success: bb11, unwind continue];
+    }
+
+    bb12: {
+        _4 = pending::<()>() -> [return: bb1, unwind: bb9];
+    }
+}
+
+alloc2 (size: 40, align: 1) {
+    0x00 │ 69 6e 74 65 72 6e 61 6c 20 65 72 72 6f 72 3a 20 │ internal error: 
+    0x10 │ 65 6e 74 65 72 65 64 20 75 6e 72 65 61 63 68 61 │ entered unreacha
+    0x20 │ 62 6c 65 20 63 6f 64 65                         │ ble code
+}
+
+fn <impl at src/lib.rs:12:1: 12:10>::tick(_1: &mut Link) -> {async fn body of Link::tick()} {
+    debug self => _1;
+    let mut _0: {async fn body of Link::tick()};
+
+    bb0: {
+        _0 = {coroutine@src/lib.rs:13:52: 18:6 (#0)} { self: move _1 };
+        return;
+    }
+}
+
+fn <impl at src/lib.rs:12:1: 12:10>::tick::{closure#0}(_1: Pin<&mut {async fn body of Link::tick()}>, _2: &mut Context<'_>) -> Poll<Result<(), ()>> {
+    coroutine layout {
+        field _s0: Result<(), ()>;
+        field _s1: std::future::ResumeTy;
+        field _s2: OsString;
+        field _s3: Vec<u8>;
+        field _s4: Result<Option<Vec<u8>>, ()>;
+        field _s5: {async fn body of pend_res()};
+        field _s6: impl Future<Output = ()>;
+        field _s7: impl Future<Output = ()>;
+        field _s8: impl Future<Output = ()>;
+        field _s9: impl Future<Output = ()>;
+        field _s10: impl Future<Output = ()>;
+        field _s11: impl Future<Output = ()>;
+        variant_fields = {
+            Unresumed(0): [],
+            Returned (1): [],
+            Panicked (2): [],
+            Suspend0 (3): [_s1, _s2, _s5],
+            Suspend1 (4): [_s2, _s5, _s6],
+            Suspend2 (5): [_s2, _s4, _s5, _s6],
+            Suspend3 (6): [_s2, _s3, _s7],
+            Suspend4 (7): [_s0, _s2, _s3, _s7],
+            Suspend5 (8): [_s2, _s8],
+            Suspend6 (9): [_s0, _s2, _s8],
+            Suspend7 (10): [_s2, _s9],
+            Suspend8 (11): [_s0, _s2, _s9],
+            Suspend9 (12): [_s2, _s5, _s10],
+            Suspend10(13): [_s2, _s11],
+        }
+        storage_conflicts = BitMatrix(12x12) {(_s0, _s0), (_s0, _s1), (_s0, _s2), (_s0, _s3), (_s0, _s4), (_s0, _s5), (_s0, _s6), (_s0, _s7), (_s0, _s8), (_s0, _s9), (_s0, _s10), (_s0, _s11), (_s1, _s0), (_s1, _s1), (_s1, _s2), (_s1, _s3), (_s1, _s4), (_s1, _s5), (_s1, _s6), (_s1, _s7), (_s1, _s8), (_s1, _s9), (_s1, _s10), (_s1, _s11), (_s2, _s0), (_s2, _s1), (_s2, _s2), (_s2, _s3), (_s2, _s4), (_s2, _s5), (_s2, _s6), (_s2, _s7), (_s2, _s8), (_s2, _s9), (_s2, _s10), (_s2, _s11), (_s3, _s0), (_s3, _s1), (_s3, _s2), (_s3, _s3), (_s3, _s7), (_s4, _s0), (_s4, _s1), (_s4, _s2), (_s4, _s4), (_s4, _s5), (_s4, _s6), (_s5, _s0), (_s5, _s1), (_s5, _s2), (_s5, _s4), (_s5, _s5), (_s5, _s6), (_s5, _s10), (_s6, _s0), (_s6, _s1), (_s6, _s2), (_s6, _s4), (_s6, _s5), (_s6, _s6), (_s7, _s0), (_s7, _s1), (_s7, _s2), (_s7, _s3), (_s7, _s7), (_s8, _s0), (_s8, _s1), (_s8, _s2), (_s8, _s8), (_s9, _s0), (_s9, _s1), (_s9, _s2), (_s9, _s9), (_s10, _s0), (_s10, _s1), (_s10, _s2), (_s10, _s5), (_s10, _s10), (_s11, _s0), (_s11, _s1), (_s11, _s2), (_s11, _s11)}
+    }
+    debug _task_context => (((*_53) as variant#3).0: std::future::ResumeTy);
+    debug self => ((*_53).0: &mut Link);
+    coroutine debug _task_context => _s1;
+    let mut _0: std::task::Poll<std::result::Result<(), ()>>;
+    let _3: &mut Link;
+    let mut _4: ();
+    let mut _5: std::ops::ControlFlow<std::result::Result<!, ()>, std::option::Option<std::vec::Vec<u8>>>;
+    let mut _6: {async fn body of pend_res()};
+    let mut _7: {async fn body of pend_res()};
+    let mut _8: std::task::Poll<std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>>;
+    let mut _9: std::pin::Pin<&mut {async fn body of pend_res()}>;
+    let mut _10: &mut {async fn body of pend_res()};
+    let mut _11: &mut std::task::Context<'_>;
+    let mut _12: std::future::ResumeTy;
+    let mut _13: isize;
+    let mut _15: isize;
+    let mut _18: isize;
+    let mut _19: ();
+    let mut _20: std::task::Poll<()>;
+    let mut _21: isize;
+    let mut _22: std::pin::Pin<&mut impl std::future::Future<Output = ()>>;
+    let mut _23: &mut std::task::Context<'_>;
+    let mut _24: std::future::ResumeTy;
+    let mut _25: &mut impl std::future::Future<Output = ()>;
+    let mut _26: std::pin::Pin<&mut {async fn body of pend_res()}>;
+    let mut _27: &mut {async fn body of pend_res()};
+    let mut _28: std::task::Poll<()>;
+    let mut _29: isize;
+    let mut _30: std::pin::Pin<&mut impl std::future::Future<Output = ()>>;
+    let mut _31: &mut std::task::Context<'_>;
+    let mut _32: std::future::ResumeTy;
+    let mut _33: &mut impl std::future::Future<Output = ()>;
+    let mut _34: std::pin::Pin<&mut std::vec::Vec<u8>>;
+    let mut _35: &mut std::vec::Vec<u8>;
+    let mut _36: std::task::Poll<()>;
+    let mut _37: isize;
+    let mut _38: std::pin::Pin<&mut impl std::future::Future<Output = ()>>;
+    let mut _39: &mut std::task::Context<'_>;
+    let mut _40: std::future::ResumeTy;
+    let mut _41: &mut impl std::future::Future<Output = ()>;
+    let mut _42: std::pin::Pin<&mut std::ffi::OsString>;
+    let mut _43: &mut std::ffi::OsString;
+    let mut _44: std::task::Poll<()>;
+    let mut _45: isize;
+    let mut _46: std::pin::Pin<&mut impl std::future::Future<Output = ()>>;
+    let mut _47: &mut std::task::Context<'_>;
+    let mut _48: std::future::ResumeTy;
+    let mut _49: &mut impl std::future::Future<Output = ()>;
+    let mut _50: std::pin::Pin<&mut std::ffi::OsString>;
+    let mut _51: &mut std::ffi::OsString;
+    let mut _52: u32;
+    let mut _53: &mut {async fn body of Link::tick()};
+    let mut _54: std::future::ResumeTy;
+    let mut _55: std::ptr::NonNull<std::task::Context<'_>>;
+    scope 1 {
+        debug self => _3;
+        coroutine debug _pb => _s2;
+        scope 2 {
+            debug _pb => (((*_53) as variant#13).0: std::ffi::OsString);
+            coroutine debug _iov0 => _s3;
+            coroutine debug __awaitee => _s5;
+            let _16: std::result::Result<!, ()>;
+            let _17: std::option::Option<std::vec::Vec<u8>>;
+            scope 3 {
+                debug _iov0 => (((*_53) as variant#7).2: std::vec::Vec<u8>);
+            }
+            scope 4 {
+                debug __awaitee => (((*_53) as variant#12).1: {async fn body of pend_res()});
+                let _14: std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>;
+                scope 5 {
+                    debug result => _14;
+                }
+            }
+            scope 6 {
+                debug residual => _16;
+                scope 7 {
+                }
+            }
+            scope 8 {
+                debug val => _17;
+                scope 9 {
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _55 = move _2 as std::ptr::NonNull<std::task::Context<'_>> (Transmute);
+        _54 = std::future::ResumeTy(move _55);
+        _53 = copy (_1.0: &mut {async fn body of Link::tick()});
+        _52 = discriminant((*_53));
+        switchInt(move _52) -> [0: bb62, 1: bb61, 2: bb60, 3: bb49, 4: bb50, 5: bb51, 6: bb52, 7: bb53, 8: bb54, 9: bb55, 10: bb56, 11: bb57, 12: bb58, 13: bb59, otherwise: bb7];
+    }
+
+    bb1: {
+        _7 = pend_res() -> [return: bb2, unwind: bb18];
+    }
+
+    bb2: {
+        _6 = <{async fn body of pend_res()} as IntoFuture>::into_future(move _7) -> [return: bb3, unwind: bb18];
+    }
+
+    bb3: {
+        (((*_53) as variant#12).1: {async fn body of pend_res()}) = move _6;
+        goto -> bb4;
+    }
+
+    bb4: {
+        _10 = &mut (((*_53) as variant#12).1: {async fn body of pend_res()});
+        _9 = Pin::<&mut {async fn body of pend_res()}>::new_unchecked(copy _10) -> [return: bb5, unwind: bb17];
+    }
+
+    bb5: {
+        _12 = copy (((*_53) as variant#3).0: std::future::ResumeTy);
+        _11 = copy (_12.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _8 = <{async fn body of pend_res()} as Future>::poll(move _9, copy _11) -> [return: bb6, unwind: bb17];
+    }
+
+    bb6: {
+        _13 = discriminant(_8);
+        switchInt(move _13) -> [0: bb9, 1: bb8, otherwise: bb7];
+    }
+
+    bb7: {
+        unreachable;
+    }
+
+    bb8: {
+        _0 = Poll::<Result<(), ()>>::Pending;
+        discriminant((*_53)) = 3;
+        return;
+    }
+
+    bb9: {
+        _14 = move ((_8 as Ready).0: std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>);
+        (((*_53) as variant#5).1: std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>) = move _14;
+        _27 = &mut (((*_53) as variant#12).1: {async fn body of pend_res()});
+        _26 = Pin::<&mut {async fn body of pend_res()}>::new_unchecked(move _27) -> [return: bb25, unwind: bb18];
+    }
+
+    bb10: {
+        _15 = discriminant(_5);
+        switchInt(move _15) -> [0: bb11, 1: bb12, otherwise: bb7];
+    }
+
+    bb11: {
+        _17 = move ((_5 as Continue).0: std::option::Option<std::vec::Vec<u8>>);
+        _18 = discriminant(_17);
+        switchInt(move _18) -> [1: bb14, 0: bb13, otherwise: bb7];
+    }
+
+    bb12: {
+        _16 = copy ((_5 as Break).0: std::result::Result<!, ()>);
+        (((*_53) as variant#11).0: std::result::Result<(), ()>) = <Result<(), ()> as FromResidual<Result<!, ()>>>::from_residual(copy _16) -> [return: bb63, unwind: bb18];
+    }
+
+    bb13: {
+        _4 = ();
+        (((*_53) as variant#11).0: std::result::Result<(), ()>) = Result::<(), ()>::Ok(move _4);
+        goto -> bb15;
+    }
+
+    bb14: {
+        (((*_53) as variant#7).2: std::vec::Vec<u8>) = copy ((_17 as Some).0: std::vec::Vec<u8>);
+        _19 = ();
+        (((*_53) as variant#11).0: std::result::Result<(), ()>) = Result::<(), ()>::Ok(move _19);
+        _35 = &mut (((*_53) as variant#7).2: std::vec::Vec<u8>);
+        _34 = Pin::<&mut Vec<u8>>::new_unchecked(move _35) -> [return: bb32, unwind: bb18];
+    }
+
+    bb15: {
+        _51 = &mut (((*_53) as variant#13).0: std::ffi::OsString);
+        _50 = Pin::<&mut OsString>::new_unchecked(move _51) -> [return: bb44, unwind: bb48];
+    }
+
+    bb16: {
+        _0 = Poll::<Result<(), ()>>::Ready(move (((*_53) as variant#11).0: std::result::Result<(), ()>));
+        discriminant((*_53)) = 1;
+        return;
+    }
+
+    bb17 (cleanup): {
+        drop((((*_53) as variant#12).1: {async fn body of pend_res()})) -> [return: bb18, unwind terminate(cleanup)];
+    }
+
+    bb18 (cleanup): {
+        drop((((*_53) as variant#13).0: std::ffi::OsString)) -> [return: bb48, unwind terminate(cleanup)];
+    }
+
+    bb19: {
+        _5 = <Result<Option<Vec<u8>>, ()> as Try>::branch(move (((*_53) as variant#5).1: std::result::Result<std::option::Option<std::vec::Vec<u8>>, ()>)) -> [return: bb10, unwind: bb18];
+    }
+
+    bb20: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb20, unwind: bb18];
+    }
+
+    bb21: {
+        _0 = Poll::<Result<(), ()>>::Pending;
+        discriminant((*_53)) = 5;
+        return;
+    }
+
+    bb22: {
+        _21 = discriminant(_20);
+        switchInt(move _21) -> [0: bb19, 1: bb21, otherwise: bb7];
+    }
+
+    bb23: {
+        _24 = move (((*_53) as variant#3).0: std::future::ResumeTy);
+        _23 = copy (_24.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _20 = <impl Future<Output = ()> as Future>::poll(move _22, move _23) -> [return: bb22, unwind: bb18];
+    }
+
+    bb24: {
+        _25 = &mut (((*_53) as variant#5).3: impl std::future::Future<Output = ()>);
+        _22 = Pin::<&mut impl Future<Output = ()>>::new_unchecked(move _25) -> [return: bb23, unwind: bb18];
+    }
+
+    bb25: {
+        (((*_53) as variant#5).3: impl std::future::Future<Output = ()>) = async_drop_in_place::<{async fn body of pend_res()}>(copy (_26.0: &mut {async fn body of pend_res()})) -> [return: bb64, unwind: bb18];
+    }
+
+    bb26: {
+        _43 = &mut (((*_53) as variant#13).0: std::ffi::OsString);
+        _42 = Pin::<&mut OsString>::new_unchecked(move _43) -> [return: bb38, unwind: bb48];
+    }
+
+    bb27: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb27, unwind: bb18];
+    }
+
+    bb28: {
+        _0 = Poll::<Result<(), ()>>::Pending;
+        discriminant((*_53)) = 7;
+        return;
+    }
+
+    bb29: {
+        _29 = discriminant(_28);
+        switchInt(move _29) -> [0: bb26, 1: bb28, otherwise: bb7];
+    }
+
+    bb30: {
+        _32 = move (((*_53) as variant#3).0: std::future::ResumeTy);
+        _31 = copy (_32.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _28 = <impl Future<Output = ()> as Future>::poll(move _30, move _31) -> [return: bb29, unwind: bb18];
+    }
+
+    bb31: {
+        _33 = &mut (((*_53) as variant#7).3: impl std::future::Future<Output = ()>);
+        _30 = Pin::<&mut impl Future<Output = ()>>::new_unchecked(move _33) -> [return: bb30, unwind: bb18];
+    }
+
+    bb32: {
+        (((*_53) as variant#7).3: impl std::future::Future<Output = ()>) = async_drop_in_place::<Vec<u8>>(copy (_34.0: &mut std::vec::Vec<u8>)) -> [return: bb65, unwind: bb18];
+    }
+
+    bb33: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb33, unwind: bb48];
+    }
+
+    bb34: {
+        _0 = Poll::<Result<(), ()>>::Pending;
+        discriminant((*_53)) = 9;
+        return;
+    }
+
+    bb35: {
+        _37 = discriminant(_36);
+        switchInt(move _37) -> [0: bb16, 1: bb34, otherwise: bb7];
+    }
+
+    bb36: {
+        _40 = move (((*_53) as variant#3).0: std::future::ResumeTy);
+        _39 = copy (_40.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _36 = <impl Future<Output = ()> as Future>::poll(move _38, move _39) -> [return: bb35, unwind: bb48];
+    }
+
+    bb37: {
+        _41 = &mut (((*_53) as variant#9).2: impl std::future::Future<Output = ()>);
+        _38 = Pin::<&mut impl Future<Output = ()>>::new_unchecked(move _41) -> [return: bb36, unwind: bb48];
+    }
+
+    bb38: {
+        (((*_53) as variant#9).2: impl std::future::Future<Output = ()>) = async_drop_in_place::<OsString>(copy (_42.0: &mut std::ffi::OsString)) -> [return: bb66, unwind: bb48];
+    }
+
+    bb39: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb39, unwind: bb48];
+    }
+
+    bb40: {
+        _0 = Poll::<Result<(), ()>>::Pending;
+        discriminant((*_53)) = 11;
+        return;
+    }
+
+    bb41: {
+        _45 = discriminant(_44);
+        switchInt(move _45) -> [0: bb16, 1: bb40, otherwise: bb7];
+    }
+
+    bb42: {
+        _48 = move (((*_53) as variant#3).0: std::future::ResumeTy);
+        _47 = copy (_48.0: std::ptr::NonNull<std::task::Context<'_>>) as &mut std::task::Context<'_> (Transmute);
+        _44 = <impl Future<Output = ()> as Future>::poll(move _46, move _47) -> [return: bb41, unwind: bb48];
+    }
+
+    bb43: {
+        _49 = &mut (((*_53) as variant#11).2: impl std::future::Future<Output = ()>);
+        _46 = Pin::<&mut impl Future<Output = ()>>::new_unchecked(move _49) -> [return: bb42, unwind: bb48];
+    }
+
+    bb44: {
+        (((*_53) as variant#11).2: impl std::future::Future<Output = ()>) = async_drop_in_place::<OsString>(copy (_50.0: &mut std::ffi::OsString)) -> [return: bb67, unwind: bb48];
+    }
+
+    bb45 (cleanup): {
+        drop((((*_53) as variant#13).0: std::ffi::OsString)) -> [return: bb48, unwind terminate(cleanup)];
+    }
+
+    bb46: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb46, unwind: bb45];
+    }
+
+    bb47: {
+        assert(const false, "`async fn` resumed after async drop") -> [success: bb47, unwind: bb48];
+    }
+
+    bb48 (cleanup): {
+        discriminant((*_53)) = 2;
+        resume;
+    }
+
+    bb49: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb4;
+    }
+
+    bb50: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb20;
+    }
+
+    bb51: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb24;
+    }
+
+    bb52: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb27;
+    }
+
+    bb53: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb31;
+    }
+
+    bb54: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb33;
+    }
+
+    bb55: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb37;
+    }
+
+    bb56: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb39;
+    }
+
+    bb57: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb43;
+    }
+
+    bb58: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb46;
+    }
+
+    bb59: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        goto -> bb47;
+    }
+
+    bb60: {
+        assert(const false, "`async fn` resumed after panicking") -> [success: bb60, unwind continue];
+    }
+
+    bb61: {
+        assert(const false, "`async fn` resumed after completion") -> [success: bb61, unwind continue];
+    }
+
+    bb62: {
+        (((*_53) as variant#3).0: std::future::ResumeTy) = copy _54;
+        _3 = move ((*_53).0: &mut Link);
+        (((*_53) as variant#13).0: std::ffi::OsString) = <OsString as From<&str>>::from(const "x") -> [return: bb1, unwind: bb48];
+    }
+
+    bb63: {
+        goto -> bb15;
+    }
+
+    bb64: {
+        goto -> bb24;
+    }
+
+    bb65: {
+        goto -> bb31;
+    }
+
+    bb66: {
+        goto -> bb37;
+    }
+
+    bb67: {
+        goto -> bb43;
+    }
+}
+
+alloc4 (size: 1, align: 1) {
+    78                                              │ x
+}
+warning: `async-drop-unsoundness` (lib) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s

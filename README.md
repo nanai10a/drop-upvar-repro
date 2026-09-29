@@ -64,6 +64,9 @@ Control: comment out the feature gate in `src/lib.rs` and both pass
   the rlib boundary it loses the upvar (160 bytes, FAILED) — with
   identical MIR layout dumps on both sides. The rlib metadata layout (or
   the downstream evaluation of it) disagrees with the defining crate's.
+- Full offset drill-down: `analysis/SHIM-COLLAPSE.md` (captures
+  `pts-lib.txt`/`pts-bin.txt`/`mir-lib.txt` + `offsets.py`, all re-taken
+  on the minimized repro).
 
 ## Origin
 
