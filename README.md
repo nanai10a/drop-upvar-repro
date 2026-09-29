@@ -125,6 +125,24 @@ but that fix covers types that **implement** `AsyncDrop`. This repro
 shows the same class of breakage with **no `AsyncDrop` impl at all**:
 the gate alone is enough to desync the layouts.
 
+## CI truth table
+
+`.github/workflows/matrix.yml`: OS x toolchain, `continue-on-error`
+(red = bug reproduced, green = clean). Run
+[#1](https://github.com/nanai10a/drop-upvar-repro/actions/runs/36619706747)
+(2026-09-29):
+
+| toolchain | linux x64 | linux arm64 | windows x64 | windows arm64 | macos arm64 |
+|---|---|---|---|---|---|
+| nightly-2025-04-27 | green | green | green | green | green |
+| nightly-2025-04-29 | red | red | red | red | red |
+| nightly (latest) | red | red | red | red | red |
+
+All failures are in the `run repro` (`cargo test`) step; toolchain
+installs succeed everywhere. The bug is fully platform-independent —
+same result on three OSes x two architectures — pointing at MIR-level
+layout computation rather than any codegen backend.
+
 ## Regression: bisected to #123948
 
 Backward verification (same 2-crate repro, `cargo test`):
