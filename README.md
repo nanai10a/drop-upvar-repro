@@ -32,8 +32,10 @@ cargo run
 cargo test
 ```
 
-Expected (bug present): `tick future size = 160`,
-`link address 0x... not found in 160-byte future`, assertion FAILED.
+Expected (bug present): bin test FAILs (`tick future size = 160`,
+`link address 0x... not found in 160-byte future`); lib-side probe
+in `src/lib.rs` passes (248 bytes, upvar found) — the caller/callee
+size disagreement is the mechanism.
 Control: comment out the feature gate in `src/lib.rs` and both pass
 (future is 40 bytes and contains the address).
 
@@ -49,11 +51,14 @@ Control: comment out the feature gate in `src/lib.rs` and both pass
   and 11 suspend variants (vs 1 without the gate) — the async-drop
   transform's drop-scope bookkeeping. Upvar storage appears to be lost
   when that layout is built.
-- Trigger (all required simultaneously, found by bisection from a
-  1008-byte real-world future):
-  - a shared borrow of a pre-await local (`let _p = &_s;`), and
-  - an `OsString` local (`OsString::from`, `PathBuf`, `Cow`, `current_exe()`
-    chains all trigger; `String`/`Vec` do not).
+- Trigger (minimized by variant matrix, 26 runs; the shared borrow
+  turned out unnecessary):
+  - an `OsString` local alive across await (`OsString::from`,
+    `PathBuf`, `Cow`, `Option<String>`, `Box<String>`, `current_exe()`
+    chains all trigger; `String`/`Vec`/`CString`/`Box<str>`/`Rc`/
+    `HashMap` do not), created pre-await, and
+  - the 2-crate lib/bin split (single-crate bin yields a correct
+    248-byte future and passes).
 - The same source used inside the defining crate yields a correct future
   (`cargo run` on a self-contained bin: 248 bytes, ok), but used across
   the rlib boundary it loses the upvar (160 bytes, FAILED) — with
