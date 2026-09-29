@@ -38,6 +38,23 @@ in `src/lib.rs` passes (248 bytes, upvar found) — the caller/callee
 size disagreement is the mechanism.
 Control: comment out the feature gate in `src/lib.rs` and both pass
 (future is 40 bytes and contains the address).
+Gate matrix (all on latest nightly, V16 repro — proves the consumer
+recomputes the layout from its own gate):
+
+| lib gate | bin gate | bin future | result |
+|---|---|---|---|
+| on | off | 160B | FAIL (the bug) |
+| on | on | 248B | pass |
+| off | off | 40B | pass |
+| off | on | 40B | pass |
+
+Only lib-on/bin-off diverges: the defining crate bakes async-drop
+shim state machines into the coroutine, the gate-off consumer
+re-elaborates drops as sync and shrinks the layout. The reverse
+(off/on) agrees because gate-off MIR carries no async intent to
+misread — hence the fix must honor the *defining* crate's decision,
+not the consumer's gate (see `analysis/SHIM-COLLAPSE.md` §4 and the
+srctree notes in the issue thread).
 
 ## What the data shows
 
