@@ -1,3 +1,5 @@
+*this document is staled. update soon*
+
 # async_drop unsoundness (reproduces on latest nightly, `c1070d693` 2026-09-28)
 
 `#![feature(async_drop)]` miscompiles an async fn: the future it creates
