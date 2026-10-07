@@ -2,6 +2,8 @@
 #![feature(async_drop)]
 
 fn main() {
-    let f = dep_by::coroutine();
-    print!("{}", std::mem::size_of_val(&f));
+    dbg!(std::mem::size_of_val(&dep_by::has_drop_that_has_drop_that_has_drop()));
+    dbg!(std::mem::size_of_val(&dep_by::has_drop_that_has_drop()));
+    dbg!(std::mem::size_of_val(&dep_by::has_drop()));
+    dbg!(std::mem::size_of_val(&dep_by::has_no_drop()));
 }

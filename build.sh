@@ -11,7 +11,17 @@ rustc +stage1 --edition 2024 --crate-type bin --extern dep_by=libsync_dep_by.rli
 rustc +stage1 --edition 2024 --crate-type bin --extern dep_by=libsync_dep_by.rlib   sync-dep-to.rs -o  sync-dep-to-sync.bin
 
 
-echo " sync /  sync ... $(./sync-dep-to-sync.bin)"
-echo "async /  sync ... $(./async-dep-to-sync.bin)"
-echo " sync / async ... $(./sync-dep-to-async.bin)"
-echo "async / async ... $(./async-dep-to-async.bin)"
+echo " sync_drop /  sync_drop ..."
+./sync-dep-to-sync.bin
+echo
+
+echo "async_drop /  sync_drop ..."
+./async-dep-to-sync.bin
+echo
+
+echo " sync_drop / async_drop ..."
+./sync-dep-to-async.bin
+echo
+
+echo "async_drop / async_drop ..."
+./async-dep-to-async.bin
