@@ -13,3 +13,5 @@ aa = ["async-drop", "be-depended/async-drop"]
 as = ["async-drop"                          ]
 sa = [              "be-depended/async-drop"]
 ss = [                                      ]
+
+minimal = []

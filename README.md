@@ -22,10 +22,32 @@ cargo miri run --features sa
 cargo miri run --features aa
 ```
 
+### Run minimal edit.
+
+Type a command:
+
+```sh
+cargo run --features sa,minimal
+cargo miri run --features sa,minimal
+```
+
+Then I'd got:
+
+```
+repro--rust-lang--rust--163506(55558,0x1ef057f80) malloc: *** error for object 0x16b4628f0: pointer being freed was not allocated
+repro--rust-lang--rust--163506(55558,0x1ef057f80) malloc: *** set a breakpoint in malloc_error_break to debug
+```
+
+```
+# no outputs
+```
+
 ## Current diagnostics
 
 TL;DR - Currently Miri handles shim\[s\] correctly, so **this problem couldn't reproduce on it**.
 This problem only happens on outside of Miri, executing codegen-ed instructions.
+
+On minimal edit., `fn main` polls the same future twice, because if poll only once, someone doesn't validate call-stack soundness so we can't know what happened.
 
 ---
 
