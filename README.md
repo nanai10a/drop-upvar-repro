@@ -33,36 +33,37 @@ On runned natively with `sa`, I'd got:
 
 ```
 [  no drop   ] ok - size `1`
-[ has drop   ] ok - size `24`
-[(has drop)^2] ng - inconsistent size, expects `40` but actually is `24`
-[(has drop)^3] ng - inconsistent size, expects `56` but actually is `24`
+[ has drop   ] ng - inconsistent size, expects `96` but actually is `48`
+[(has drop)^2] ng - inconsistent size, expects `112` but actually is `48`
+repro--rust-lang--rust--163506(54948,0x1ef057f80) malloc: *** error for object 0x10700007e4e0: pointer being freed was not allocated
+repro--rust-lang--rust--163506(54948,0x1ef057f80) malloc: *** set a breakpoint in malloc_error_break to debug
 ```
 
 And, on runned natively with `aa`, I'd got:
 
 ```
 [  no drop   ] ok - size `1`
-[ has drop   ] ok - size `24`
-[(has drop)^2] ok - size `40`
-[(has drop)^3] ok - size `56`
+[ has drop   ] ok - size `96`
+[(has drop)^2] ok - size `112`
+[(has drop)^3] ok - size `128`
 ```
 
 But if runned on Miri with `sa`, I'd got:
 
 ```
 [  no drop   ] ok - size `1`
-[ has drop   ] ok - size `24`
-[(has drop)^2] ok - size `24`
-[(has drop)^3] ok - size `24`
+[ has drop   ] ok - size `48`
+[(has drop)^2] ok - size `48`
+[(has drop)^3] ok - size `48`
 ```
 
 And, with `aa`, respectively, I'd got:
 
 ```
 [  no drop   ] ok - size `1`
-[ has drop   ] ok - size `24`
-[(has drop)^2] ok - size `40`
-[(has drop)^3] ok - size `56`
+[ has drop   ] ok - size `96`
+[(has drop)^2] ok - size `112`
+[(has drop)^3] ok - size `128`
 ```
 
 Of course Miri didn't emit any warnings or errors excepts `incomplete_features` warning of rustc.
