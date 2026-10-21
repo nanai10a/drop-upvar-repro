@@ -1,0 +1,6 @@
+[package]
+name = "sync-dep-to-async"
+edition = "2024"
+
+[dependencies]
+dep-by = { package = "async-dep-by", path = "../async-dep-by" }

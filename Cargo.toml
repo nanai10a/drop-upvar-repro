@@ -1,0 +1,11 @@
+[workspace]
+resolver = "3"
+members = [
+    "async-dep-by",
+    "sync-dep-by",
+
+    "async-dep-to-async",
+    "async-dep-to-sync",
+    "sync-dep-to-async",
+    "sync-dep-to-sync",
+]

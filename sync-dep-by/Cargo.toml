@@ -1,0 +1,3 @@
+[package]
+name = "sync-dep-by"
+edition = "2024"
