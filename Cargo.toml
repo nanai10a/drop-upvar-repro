@@ -1,11 +1,15 @@
-[workspace]
-resolver = "3"
-members = [
-    "async-dep-by",
-    "sync-dep-by",
+[package]
+name = "repro--rust-lang--rust--163506"
+edition = "2024"
 
-    "async-dep-to-async",
-    "async-dep-to-sync",
-    "sync-dep-to-async",
-    "sync-dep-to-sync",
-]
+[dependencies]
+auxiliary = { path = "auxiliary" }
+be-depended = { path = "be-depended" }
+
+[features]
+async-drop = []
+
+aa = ["async-drop", "be-depended/async-drop"]
+as = ["async-drop"                          ]
+sa = [              "be-depended/async-drop"]
+ss = [                                      ]

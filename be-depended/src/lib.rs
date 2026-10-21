@@ -1,5 +1,4 @@
-#![allow(incomplete_features)]
-#![feature(async_drop)]
+#![cfg_attr(feature = "async-drop", feature(async_drop))]
 
 pub struct HasNoDrop { _u64: u64 }
 

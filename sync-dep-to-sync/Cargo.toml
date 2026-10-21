@@ -1,6 +1,0 @@
-[package]
-name = "sync-dep-to-sync"
-edition = "2024"
-
-[dependencies]
-dep-by = { package = "sync-dep-by", path = "../sync-dep-by" }

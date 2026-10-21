@@ -3,37 +3,17 @@
 version = 4
 
 [[package]]
-name = "async-dep-by"
+name = "auxiliary"
 version = "0.0.0"
 
 [[package]]
-name = "async-dep-to-async"
+name = "be-depended"
+version = "0.0.0"
+
+[[package]]
+name = "repro--rust-lang--rust--163506"
 version = "0.0.0"
 dependencies = [
- "async-dep-by",
-]
-
-[[package]]
-name = "async-dep-to-sync"
-version = "0.0.0"
-dependencies = [
- "sync-dep-by",
-]
-
-[[package]]
-name = "sync-dep-by"
-version = "0.0.0"
-
-[[package]]
-name = "sync-dep-to-async"
-version = "0.0.0"
-dependencies = [
- "async-dep-by",
-]
-
-[[package]]
-name = "sync-dep-to-sync"
-version = "0.0.0"
-dependencies = [
- "sync-dep-by",
+ "auxiliary",
+ "be-depended",
 ]

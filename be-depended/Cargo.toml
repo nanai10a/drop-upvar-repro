@@ -1,0 +1,6 @@
+[package]
+name = "be-depended"
+edition = "2024"
+
+[features]
+async-drop = []
