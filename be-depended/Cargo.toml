@@ -4,3 +4,4 @@ edition = "2024"
 
 [features]
 async-drop = []
+extra = []

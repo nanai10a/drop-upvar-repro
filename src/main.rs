@@ -20,22 +20,39 @@ fn main() {
     let f = be_depended::has_no_drop();
     print_compared_sizes!("  no drop   " ... be_depended::HAS_NO_DROP, &f);
     let f = pin!(f);
+    print!("[  no drop   ] begin to execute future ... ");
     auxiliary::block_on(f);
+    println!("... completed.");
 
     let f = be_depended::has_drop();
     print_compared_sizes!(" has drop   " ... be_depended::HAS_DROP, &f);
     let f = pin!(f);
+    print!("[ has drop   ] begin to execute future ... ");
     auxiliary::block_on(f);
+    println!("... completed.");
 
     let f = be_depended::has_drop_that_has_drop();
     print_compared_sizes!("(has drop)^2" ... be_depended::HAS_DROP_THAT_HAS_DROP, &f);
     let f = pin!(f);
+    print!("[(has drop)^2] begin to execute future ... ");
     auxiliary::block_on(f);
+    println!("... completed.");
 
     let f = be_depended::has_drop_that_has_drop_that_has_drop();
     print_compared_sizes!("(has drop)^3" ... be_depended::HAS_DROP_THAT_HAS_DROP_THAT_HAS_DROP, &f);
     let f = pin!(f);
+    print!("[(has drop)^3] begin to execute future ... ");
     auxiliary::block_on(f);
+    println!("... completed.");
+
+    #[cfg(feature = "extra")] {
+        let f = be_depended::has_drop_that_has_drop_that_has_drop_that_has_drop();
+        print_compared_sizes!("(has drop)^4" ... be_depended::HAS_DROP_THAT_HAS_DROP_THAT_HAS_DROP_THAT_HAS_DROP, &f);
+        let f = pin!(f);
+        print!("[(has drop)^4] begin to execute future ... ");
+        auxiliary::block_on(f);
+        println!("... completed.");
+    }
 }
 
 #[cfg(feature = "minimal")]
